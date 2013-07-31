@@ -12,6 +12,7 @@ module Database.LevelDB.Types (
   , BloomFilter (..)
   , Comparator (..)
   , Compression (..)
+  , Env (..)
   , FilterPolicy (..)
   , Options (..)
   , Property (..)
@@ -49,6 +50,9 @@ data FilterPolicy = FilterPolicy
 
 -- | Represents the built-in Bloom Filter
 newtype BloomFilter = BloomFilter FilterPolicyPtr
+
+-- | User-defined environment
+newtype Env = Env EnvPtr
 
 -- | Options when opening a database
 data Options = Options
@@ -98,6 +102,10 @@ data Options = Options
       -- ^ If true, the database will be created if it is missing.
       --
       -- Default: False
+    , env                  :: !(Maybe Env)
+      -- ^ A LevelDB environment.
+      --
+      -- If 'Nothing', the default environment is used.
     , errorIfExists        :: !Bool
       -- ^ It true, an error is raised if the database already exists.
       --
@@ -140,6 +148,7 @@ defaultOptions = Options
     , comparator           = Nothing
     , compression          = Snappy
     , createIfMissing      = False
+    , env                  = Nothing
     , errorIfExists        = False
     , maxOpenFiles         = 1000
     , paranoidChecks       = False

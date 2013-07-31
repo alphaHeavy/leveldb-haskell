@@ -27,6 +27,7 @@ data LSnapshot
 data LWriteBatch
 data LWriteOptions
 data LFilterPolicy
+data LEnv
 
 type LevelDBPtr      = Ptr LevelDB
 type CachePtr        = Ptr LCache
@@ -39,6 +40,7 @@ type SnapshotPtr     = Ptr LSnapshot
 type WriteBatchPtr   = Ptr LWriteBatch
 type WriteOptionsPtr = Ptr LWriteOptions
 type FilterPolicyPtr = Ptr LFilterPolicy
+type EnvPtr          = Ptr LEnv
 
 type DBName = CString
 type ErrPtr = Ptr CString
@@ -232,6 +234,11 @@ foreign import ccall safe "leveldb/c.h leveldb_options_set_compression"
 foreign import ccall safe "leveldb/c.h leveldb_options_set_cache"
   c_leveldb_options_set_cache :: OptionsPtr -> CachePtr -> IO ()
 
+foreign import ccall safe "leveldb/c.h leveldb_options_set_env"
+  c_leveldb_options_set_env :: OptionsPtr -> EnvPtr -> IO ()
+
+foreign import ccall safe "leveldb/c.h leveldb_env_destroy"
+  c_leveldb_env_destroy :: EnvPtr -> IO ()
 
 --
 -- Comparator

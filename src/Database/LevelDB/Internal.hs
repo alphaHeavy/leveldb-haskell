@@ -79,6 +79,7 @@ data Options' = Options'
     { _optsPtr  :: !OptionsPtr
     , _cachePtr :: !(Maybe CachePtr)
     , _comp     :: !(Maybe Comparator')
+    , _env      :: !(Maybe EnvPtr)
     , _fpPtr    :: !(Maybe (Either FilterPolicyPtr FilterPolicy'))
     }
 
@@ -107,8 +108,9 @@ mkOpts Options{..} = do
     cache <- maybeSetCache opts_ptr cacheSize
     cmp   <- maybeSetCmp opts_ptr comparator
     fp    <- maybeSetFilterPolicy opts_ptr filterPolicy
+    envp  <- maybeSetEnv opts_ptr env
 
-    return (Options' opts_ptr cache cmp fp)
+    return (Options' opts_ptr cache cmp envp fp)
 
   where
     ccompression NoCompression = noCompression
@@ -146,14 +148,21 @@ mkOpts Options{..} = do
         c_leveldb_options_set_filter_policy opts_ptr fp_ptr
         return . Just . Right $ fp'
 
+    maybeSetEnv _ Nothing =
+        return Nothing
+    maybeSetEnv opts_ptr (Just (Env env_ptr)) = do
+        c_leveldb_options_set_env opts_ptr env_ptr
+        return . Just $ env_ptr
+
 freeOpts :: Options' -> IO ()
-freeOpts (Options' opts_ptr mcache_ptr mcmp_ptr mfp) = do
+freeOpts (Options' opts_ptr mcache_ptr mcmp_ptr env_ptr mfp) = do
     c_leveldb_options_destroy opts_ptr
     maybe (return ()) c_leveldb_cache_destroy mcache_ptr
     maybe (return ()) freeComparator mcmp_ptr
     maybe (return ())
           (either c_leveldb_filterpolicy_destroy freeFilterPolicy)
           mfp
+    maybe (return ()) c_leveldb_env_destroy env_ptr
 
     return ()
 

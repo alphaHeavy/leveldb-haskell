@@ -13,6 +13,7 @@ module Database.LevelDB.MonadResource (
   , BatchOp(..)
   , Comparator(..)
   , Compression(..)
+  , Env(..)
   , Options(..)
   , ReadOptions(..)
   , Snapshot
@@ -78,7 +79,7 @@ import           Data.Int                     (Int64)
 
 import           Database.LevelDB.Base        (BatchOp, BloomFilter, Comparator,
                                                Compression, DB, FilterPolicy,
-                                               Iterator, Options, Property,
+                                               Iterator, Env, Options, Property,
                                                Range, ReadOptions, Snapshot,
                                                WriteBatch, WriteOptions,
                                                defaultOptions,
