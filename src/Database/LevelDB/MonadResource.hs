@@ -29,6 +29,7 @@ module Database.LevelDB.MonadResource (
   -- * Basic Database Manipulation
   , withSnapshot
   , open
+  , open'
   , put
   , delete
   , write
