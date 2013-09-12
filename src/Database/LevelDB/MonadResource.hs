@@ -57,6 +57,7 @@ module Database.LevelDB.MonadResource (
   , iterSeek
   , iterFirst
   , iterLast
+  , iterEntry
   , iterNext
   , iterPrev
   , iterKey
@@ -201,6 +202,9 @@ iterValid = Base.iterValid
 -- comes at or past target.
 iterSeek :: MonadResource m => Iterator -> ByteString -> m ()
 iterSeek = Base.iterSeek
+
+iterEntry :: MonadResource m => Iterator ->  m (Maybe (ByteString, ByteString))
+iterEntry = Base.iterEntry
 
 -- | Position at the first key in the source. The iterator is /valid/ after this
 -- call iff the source is not empty.
